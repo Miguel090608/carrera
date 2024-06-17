@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de IMC y Plan de Carrera</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #runSection {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #runningImage {
+            width: 100%;
+            max-width: 300px;
+            margin-top: 20px;
+        }
+
+        #summary {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de IMC</h1>
+        <form id="imcForm">
+            <label for="weight">Peso (kg):</label>
+            <input type="number" id="weight" name="weight" required>
+            <label for="height">Altura (cm):</label>
+            <input type="number" id="height" name="height" required>
+            <button type="submit">Calcular IMC</button>
+        </form>
+        <div id="result"></div>
+        <div id="runSection" class="hidden">
+            <h2>¡Empezar a Correr!</h2>
+            <button id="startRun">Empezar</button>
+            <div id="runStatus" class="hidden">
+                <p id="distanceMessage"></p>
+                <img id="runningImage" src="running.gif" alt="Imagen de carrera en proceso">
+            </div>
+            <div id="summary" class="hidden">
+                <h3>Resumen de la Carrera</h3>
+                <p id="distanceRan"></p>
+                <p id="reward"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('imcForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            let weight = parseFloat(document.getElementById('weight').value);
+            let height = parseFloat(document.getElementById('height').value) / 100; // convertir a metros
+            
+            if (weight > 0 && height > 0) {
+                let imc = weight / (height * height);
+                let imcCategory;
+                
+                if (imc < 18.5) {
+                    imcCategory = 'Bajo peso';
+                } else if (imc < 24.9) {
+                    imcCategory = 'Peso normal';
+                } else if (imc < 29.9) {
+                    imcCategory = 'Sobrepeso';
+                } else {
+                    imcCategory = 'Obesidad';
+                }
+                
+                document.getElementById('result').innerHTML = `<p>Su IMC es: ${imc.toFixed(1)} (${imcCategory})</p>`;
+                
+                // Mostrar sección de carrera y mensaje de distancia según el IMC
+                document.getElementById('runSection').classList.remove('hidden');
+                let distanceMessage = document.getElementById('distanceMessage');
+                
+                switch (imcCategory) {
+                    case 'Bajo peso':
+                        distanceMessage.textContent = 'Debe correr una distancia de al menos 5 km.';
+                        break;
+                    case 'Peso normal':
+                        distanceMessage.textContent = 'Debe correr una distancia de 3 km para mantenerse saludable.';
+                        break;
+                    case 'Sobrepeso':
+                        distanceMessage.textContent = 'Para perder peso, debe correr una distancia de 7 km.';
+                        break;
+                    case 'Obesidad':
+                        distanceMessage.textContent = 'Para empezar a perder peso, debe correr una distancia de 10 km.';
+                        break;
+                    default:
+                        distanceMessage.textContent = '';
+                        break;
+                }
+            } else {
+                alert('Por favor ingrese un peso y altura válidos.');
+            }
+        });
+
+        document.getElementById('startRun').addEventListener('click', function() {
+            document.getElementById('startRun').disabled = true;
+            document.getElementById('runStatus').classList.remove('hidden');
+            
+            // Simular carrera (aquí podría incluirse una animación o imagen de carrera en proceso)
+            setTimeout(function() {
+                document.getElementById('runningImage').style.display = 'block';
+                document.getElementById('summary').classList.remove('hidden');
+                let distanceRan = document.getElementById('distanceRan');
+                let reward = document.getElementById('reward');
+                
+                // Simular distancia recorrida y calcular recompensa (simulado)
+                let distance = Math.floor(Math.random() * 10) + 1; // distancia aleatoria entre 1 y 10 km
+                distanceRan.textContent = `Ha corrido ${distance} km.`;
+                
+                // Calcular recompensa (simulado)
+                let caloriesBurned = distance * 100; // simular calorías quemadas
+                reward.textContent = `¡Felicidades! Ha quemado aproximadamente ${caloriesBurned} calorías.`;
+            }, 3000); // tiempo simulado de la carrera (3 segundos)
+        });
+    </script>
+</body>
+</html>
